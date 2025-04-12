@@ -15,7 +15,7 @@ const config: QuartzConfig = {
       provider: "plausible",
     },
     locale: "en-US",
-    baseUrl: "DRaichev.github.io/Erasmus-YE-Green-is-the-new-black-quartz",
+    baseUrl: "https://DRaichev.github.io/Erasmus-YE-Green-is-the-new-black-quartz",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "created",
     theme: {
