@@ -28,6 +28,8 @@ jobs:
           git clone https://github.com/DRaichev/Erasmus-YE-Green-is-the-new-black.git content-repo
           rm -rf content
           mv content-repo/content content
+          rm -rf assets
+          mv content-repo/assets assets
           rm -rf content-repo
       
       - name: Detect package manager
