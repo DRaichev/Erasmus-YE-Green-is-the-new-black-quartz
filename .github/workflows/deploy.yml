@@ -22,6 +22,14 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
+      
+      - name: Clone Content Repository
+        run: |
+          git clone https://github.com/DRaichev/Erasmus-YE-Green-is-the-new-black.git content-repo
+          rm -rf content
+          mv content-repo/content content
+          rm -rf content-repo
+      
       - name: Detect package manager
         id: detect-package-manager
         run: |
@@ -39,13 +47,16 @@ jobs:
             echo "Unable to determine package manager"
             exit 1
           fi
+      
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
+      
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      
       - name: Restore cache
         uses: actions/cache@v4
         with:
@@ -54,10 +65,13 @@ jobs:
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-
+      
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+      
       - name: Build with Quartz
         run: ${{ steps.detect-package-manager.outputs.runner }} quartz build
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
