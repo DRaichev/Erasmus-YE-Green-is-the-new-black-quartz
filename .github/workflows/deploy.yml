@@ -26,10 +26,13 @@ jobs:
       - name: Clone Content Repository
         run: |
           git clone https://github.com/DRaichev/Erasmus-YE-Green-is-the-new-black.git content-repo
-          rm -rf content
-          mv content-repo/content content
-          rm -rf assets
-          mv content-repo/assets assets
+          mkdir -p content assets
+          if [ -d "content-repo/content" ]; then
+            cp -r content-repo/content/* content/
+          fi
+          if [ -d "content-repo/assets" ]; then
+            cp -r content-repo/assets/* assets/
+          fi
           rm -rf content-repo
       
       - name: Detect package manager
