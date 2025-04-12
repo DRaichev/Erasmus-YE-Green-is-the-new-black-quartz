@@ -1,17 +1,27 @@
 import { PageLayout, SharedLayout } from "./quartz/cfg"
 import * as Component from "./quartz/components"
+import { QuartzComponent } from "./quartz/components/types"
+import { h } from "preact"
+
+// Custom footer component
+const CustomFooter: QuartzComponent = () => {
+  const year = new Date().getFullYear()
+  return h("footer", null, h("p", null, `Created by 7 © ${year}`))
+}
+CustomFooter.css = `
+footer {
+  text-align: left;
+  margin-bottom: 4rem;
+  opacity: 0.7;
+}
+`
 
 // components shared across all pages
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [],
   afterBody: [],
-  footer: Component.Footer({
-    links: {
-      GitHub: "https://github.com/jackyzha0/quartz",
-      "Discord Community": "https://discord.gg/cRFFHYye7t",
-    },
-  }),
+  footer: CustomFooter,
 }
 
 // components for pages that display a single page (e.g. a single note)
@@ -37,7 +47,21 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      filterFn: (node) => {
+        return node.data?.frontmatter?.hide !== true
+      },
+      sortFn: (a, b) => {
+        if ((!a.data?.filePath && !b.data?.filePath) || (!a.data?.filePath && b.data?.filePath)) {
+          return 0
+        } else if (a.data?.filePath && !b.data?.filePath) {
+          return 1
+        } else if (a.data?.filePath && b.data?.filePath) {
+          return a.data.filePath.localeCompare(b.data.filePath)
+        }
+        return 0
+      }
+    }),
   ],
   right: [
     Component.Graph(),
@@ -61,7 +85,16 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      filterFn: (node) => {
+        // Hide pages with the hide tag or hide: true in frontmatter
+        if (node.data?.tags?.includes("hide")) {
+          return false;
+        }
+        // Keep the default filter behavior for other pages
+        return node.slugSegment !== "tags";
+      },
+    }),
   ],
   right: [],
 }
